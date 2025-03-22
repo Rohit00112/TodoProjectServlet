@@ -3,20 +3,14 @@ package com.example.todo.model.user;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.example.todo.util.DatabaseUtil;
 
 public class UserDAO {
     
-    private static final String URL = "jdbc:mysql://localhost:3306/Tododb";
-    private static final String USER = "root";
-    private static final String PASSWORD = "Belbari890";
-    
-    public static Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(URL, USER, PASSWORD);
-    }
+    private static final DatabaseUtil dbUtil = DatabaseUtil.getInstance();
     
     public static User authenticateUser(String username, String password) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setString(1, username);
@@ -35,7 +29,7 @@ public class UserDAO {
     }
     
     public static boolean registerUser(User user) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         
         // Check if username already exists
         if (getUserByUsername(user.getUsername()) != null) {
@@ -52,7 +46,7 @@ public class UserDAO {
     }
     
     public static User getUserByUsername(String username) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "SELECT * FROM users WHERE username = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setString(1, username);
@@ -71,7 +65,7 @@ public class UserDAO {
     }
     
     public static User getUserById(int userId) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "SELECT * FROM users WHERE id = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setInt(1, userId);

@@ -3,20 +3,14 @@ package com.example.todo.model.todo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.example.todo.util.DatabaseUtil;
 
 public class TodoDAO {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/Tododb";
-    private static final String USER = "root";
-    private static final String PASSWORD = "Belbari890";
-
-    public static Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(URL,USER,PASSWORD);
-    }
+    private static final DatabaseUtil dbUtil = DatabaseUtil.getInstance();
 
     public static boolean addTodo(Todo todo, int userId) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "INSERT INTO todos (title,description,completed,user_id) VALUES (?,?,?,?)";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setString(1,todo.getTitle());
@@ -28,7 +22,7 @@ public class TodoDAO {
 
     public static List<Todo> getAllTodos() throws SQLException, ClassNotFoundException {
         ArrayList<Todo> todos = new ArrayList<>();
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "SELECT * FROM todos";
         PreparedStatement ps = conn.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
@@ -48,7 +42,7 @@ public class TodoDAO {
     
     public static List<Todo> getTodosByUserId(int userId) throws SQLException, ClassNotFoundException {
         ArrayList<Todo> todos = new ArrayList<>();
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "SELECT * FROM todos WHERE user_id = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setInt(1, userId);
@@ -68,7 +62,7 @@ public class TodoDAO {
     }
 
     public static boolean deleteTodo(int id) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "DELETE FROM todos WHERE id = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setInt(1,id);
@@ -76,7 +70,7 @@ public class TodoDAO {
     }
     
     public static boolean deleteTodoByIdAndUserId(int todoId, int userId) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "DELETE FROM todos WHERE id = ? AND user_id = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setInt(1, todoId);
@@ -85,7 +79,7 @@ public class TodoDAO {
     }
     
     public static boolean isTodoOwnedByUser(int todoId, int userId) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "SELECT COUNT(*) FROM todos WHERE id = ? AND user_id = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setInt(1, todoId);
@@ -100,7 +94,7 @@ public class TodoDAO {
     }
     
     public static Todo getTodoById(int todoId) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "SELECT * FROM todos WHERE id = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setInt(1, todoId);
@@ -117,7 +111,7 @@ public class TodoDAO {
     }
     
     public static boolean updateTodo(Todo todo) throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
+        Connection conn = dbUtil.getConnection();
         String query = "UPDATE todos SET title = ?, description = ?, completed = ? WHERE id = ?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setString(1, todo.getTitle());
